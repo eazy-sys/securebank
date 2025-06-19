@@ -1,4 +1,4 @@
-name: Build and Push to ACR
+name: Build backend and Push to ACR
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-        
-            
+
       - name: Log in to Azure
         uses: azure/login@v1
         with:
