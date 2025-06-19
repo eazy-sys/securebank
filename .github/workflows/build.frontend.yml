@@ -1,4 +1,4 @@
-name: Build frontend and Push to ACR
+name: Build frontend code and Push to ACR
 
 on:
   push:

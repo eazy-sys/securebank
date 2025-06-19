@@ -1,4 +1,4 @@
-name: Build backend and Push to ACR
+name: Build backend code and Push to ACR
 
 on:
   push:
