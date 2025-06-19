@@ -42,5 +42,5 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -f App/backend/Dockerfile -t securebankdevacr.azurecr.io/securebank-backend:latest .
+          docker build -f App/backend/Dockerfile -t securebankdevacr.azurecr.io/securebank-backend:latest
           docker push securebankdevacr.azurecr.io/securebank-backend:latest
