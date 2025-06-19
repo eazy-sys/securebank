@@ -27,4 +27,6 @@ module "aks" {
   resource_group_name = azurerm_resource_group.this.name
   acr_id              = module.acr.acr_id
   subnet_id           = module.network.aks_subnet_id
+  node_size           = "Standard_D2s_v3"
+  node_count          = 2
 }

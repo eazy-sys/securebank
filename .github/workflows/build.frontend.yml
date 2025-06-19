@@ -1,0 +1,36 @@
+name: Build and Push to ACR
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'App/frontend/**'
+      - '.github/workflows/build.frontend.yml'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache Node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Log in to Azure Container Registry
+        run: az acr login --name securebankdevacr
+
+      - name: Build and push Docker image
+        run: |
+          docker build -f Dockerfile -t securebankdevacr.azurecr.io/securebank-frontend:latest .
+          docker push securebankdevacr.azurecr.io/securebank-frontend:latest

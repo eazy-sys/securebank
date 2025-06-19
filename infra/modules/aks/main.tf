@@ -5,10 +5,10 @@ resource "azurerm_kubernetes_cluster" "this" {
   dns_prefix          = "${var.project_name}-${var.environment}-dns"
 
   default_node_pool {
-    name       = "default"
-    node_count = var.node_count
-    vm_size    = var.node_size
-    vnet_subnet_id = var.subnet_id
+    name            = "default"
+    node_count      = var.node_count
+    vm_size         = var.node_size
+    vnet_subnet_id  = var.subnet_id
   }
 
   identity {
@@ -16,20 +16,19 @@ resource "azurerm_kubernetes_cluster" "this" {
   }
 
   network_profile {
-    network_plugin = "azure"
-    dns_service_ip = "10.0.2.10"
-    service_cidr   = "10.0.2.0/24"
-    docker_bridge_cidr = "172.17.0.1/16"
+    network_plugin       = "azure"
+    dns_service_ip       = "10.0.2.10"
+    service_cidr         = "10.0.2.0/24"
+    #docker_bridge_cidr   = "172.17.0.1/16"
   }
 
-  role_based_access_control {
-    enabled = true
-  }
+  # Optional
+  # role_based_access_control_enabled = true
 
-  tags = {
-    environment = var.environment
-    project     = var.project_name
-  }
+  # tags = {
+  #   environment = var.environment
+  #   project     = var.project_name
+  # }
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "user" {
@@ -42,9 +41,8 @@ resource "azurerm_kubernetes_cluster_node_pool" "user" {
 }
 
 resource "azurerm_role_assignment" "acr_pull" {
-  principal_id                     = azurerm_kubernetes_cluster.this.kubelet_identity[0].object_id
-  role_definition_name             = "AcrPull"
-  scope                            = var.acr_id
+  principal_id                      = azurerm_kubernetes_cluster.this.kubelet_identity[0].object_id
+  role_definition_name              = "AcrPull"
+  scope                             = var.acr_id
   skip_service_principal_aad_check = true
 }
-
