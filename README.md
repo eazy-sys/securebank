@@ -10,6 +10,7 @@ SecureBank is a fullstack **banking simulation app** deployed using **enterprise
 
 ---
 
+;
 ## 📦 Stack Overview
 
 | Layer              | Toolset                                 |
