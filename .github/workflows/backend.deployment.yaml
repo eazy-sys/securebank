@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - App/backend/**
-      - .github/workflows/build.backend.yml
+      - .github/workflows/backend.deployment.yaml
 
 permissions:
   id-token: write
