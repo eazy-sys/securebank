@@ -1,4 +1,4 @@
-name: Build and Push Backend
+name: Build and Push Frontend
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - App/backend/**
-      - .github/workflows/backend.deployment.yaml
+      - .github/workflows/frontend.deployment.yaml
 
 permissions:
   id-token: write
@@ -32,7 +32,7 @@ jobs:
         run: az acr login --name securebankdevacr
 
       - name: Build and push Docker image
-        working-directory: ./App/backend
+        working-directory: ./App/frontend
         run: |
-          docker build -f Dockerfile -t securebankdevacr.azurecr.io/securebank-backend:latest .
-          docker push securebankdevacr.azurecr.io/securebank-backend:latest
+          docker build -f Dockerfile -t securebankdevacr.azurecr.io/securebank-frontend:latest .
+          docker push securebankdevacr.azurecr.io/securebank-frontend:latest
