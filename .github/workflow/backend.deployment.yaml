@@ -32,6 +32,7 @@ jobs:
         run: az acr login --name securebankdevacr
 
       - name: Build and push Docker image
+        working-directory: ./App/backend
         run: |
           docker build -f Dockerfile -t securebankdevacr.azurecr.io/securebank-backend:latest .
           docker push securebankdevacr.azurecr.io/securebank-backend:latest
