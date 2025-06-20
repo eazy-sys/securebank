@@ -6,7 +6,7 @@ on:
     types:
       - completed
 
-permissions:  # 👈 this must be here at the top level (not inside jobs)
+permissions:
   id-token: write
   contents: read
 
@@ -15,67 +15,71 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Azure Login with OIDC
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          enable-AzPSSession: false
+    - name: Azure Login with OIDC
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        enable-AzPSSession: false
 
-      - name: ACR login
-        run: az acr login --name securebankdevacr
+    - name: ACR login
+      run: az acr login --name securebankdevacr
 
-      - name: Run Trivy on Backend Image
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: securebankdevacr.azurecr.io/securebank-backend:latest
-          format: table
-          exit-code: 0
+    - name: Run Trivy on Backend Image
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: securebankdevacr.azurecr.io/securebank-backend:latest
+        format: table
+        exit-code: 0
 
-      - name: Run Trivy on Frontend Image
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: securebankdevacr.azurecr.io/securebank-frontend:latest
-          format: table
-          exit-code: 0
+    - name: Run Trivy on Frontend Image
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: securebankdevacr.azurecr.io/securebank-frontend:latest
+        format: table
+        exit-code: 0
 
-      - name: SonarCloud Scan (Backend)
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          projectBaseDir: App/backend
-          args: >
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: Build Backend with Maven
+      run: mvn clean verify --file App/backend/pom.xml
 
-      - name: SonarCloud Scan (Frontend)
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          projectBaseDir: App/frontend
-          args: >
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: SonarCloud Scan (Backend)
+      uses: SonarSource/sonarcloud-github-action@v2
+      with:
+        projectBaseDir: App/backend
+        args: >
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+          -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+          -Dsonar.java.binaries=target
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Send Email Notification
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.SMTP_USERNAME }}
-          password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "🔐 SecureBank – Security Scan Completed"
-          to: securebank74@gmail.com
-          from: securebank74@gmail.com
-          body: |
-            ✅ Trivy and SonarCloud scans have completed for both frontend and backend.
+    - name: SonarCloud Scan (Frontend)
+      uses: SonarSource/sonarcloud-github-action@v2
+      with:
+        projectBaseDir: App/frontend
+        args: >
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+          -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-            🔍 Trivy: Vulnerability scans on ACR images (backend & frontend)
-            🔎 SonarCloud Backend: https://sonarcloud.io/project/overview?id=${{ secrets.SONAR_BACKEND_PROJECT_KEY }}
-            🔎 SonarCloud Frontend: https://sonarcloud.io/project/overview?id=${{ secrets.SONAR_FRONTEND_PROJECT_KEY }}
+    - name: Send Email Notification
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        username: ${{ secrets.SMTP_USERNAME }}
+        password: ${{ secrets.SMTP_PASSWORD }}
+        subject: "🔐 SecureBank – Security Scan Completed"
+        to: securebank74@gmail.com
+        from: securebank74@gmail.com
+        body: |
+          ✅ Trivy and SonarCloud scans have completed for both frontend and backend.
+
+          🔍 Trivy: Vulnerability scans on ACR images (backend & frontend)
+          🔎 SonarCloud Backend: https://sonarcloud.io/project/overview?id=${{ secrets.SONAR_BACKEND_PROJECT_KEY }}
+          🔎 SonarCloud Frontend: https://sonarcloud.io/project/overview?id=${{ secrets.SONAR_FRONTEND_PROJECT_KEY }}
