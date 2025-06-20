@@ -50,7 +50,7 @@ jobs:
         args: >
           -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
           -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-          -Dsonar.java.binaries=target
+          -Dsonar.skipTests=true
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
