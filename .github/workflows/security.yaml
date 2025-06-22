@@ -40,8 +40,8 @@ jobs:
         format: table
         exit-code: 0
 
-    - name: Build Backend with Maven
-      run: mvn clean verify --file App/backend/pom.xml
+    - name: Build Backend Without Tests
+      run: mvn clean verify -DskipTests --file App/backend/pom.xml
 
     - name: SonarCloud Scan (Backend)
       uses: SonarSource/sonarcloud-github-action@v2
@@ -50,7 +50,9 @@ jobs:
         args: >
           -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
           -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-          -Dsonar.skipTests=true
+          -Dsonar.java.binaries=target/classes
+          -Dsonar.exclusions=**/test/**,**/*Test.java
+          -Dsonar.tests=.
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 

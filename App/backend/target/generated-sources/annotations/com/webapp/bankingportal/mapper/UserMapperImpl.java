@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-17T23:52:55+0100",
-    comments = "version: 1.6.0.Beta2, compiler: javac, environment: Java 21.0.6 (Eclipse Adoptium)"
+    date = "2025-06-20T20:53:02+0100",
+    comments = "version: 1.6.0.Beta2, compiler: Eclipse JDT (IDE) 3.42.0.v20250514-1000, environment: Java 21.0.7 (Eclipse Adoptium)"
 )
 @Component
 public class UserMapperImpl implements UserMapper {
@@ -18,8 +18,14 @@ public class UserMapperImpl implements UserMapper {
             return;
         }
 
-        if ( source.getAccount() != null ) {
-            target.setAccount( source.getAccount() );
+        if ( source.getAddress() != null ) {
+            target.setAddress( source.getAddress() );
+        }
+        if ( source.getCountryCode() != null ) {
+            target.setCountryCode( source.getCountryCode() );
+        }
+        if ( source.getEmail() != null ) {
+            target.setEmail( source.getEmail() );
         }
         if ( source.getId() != null ) {
             target.setId( source.getId() );
@@ -30,17 +36,11 @@ public class UserMapperImpl implements UserMapper {
         if ( source.getPassword() != null ) {
             target.setPassword( source.getPassword() );
         }
-        if ( source.getEmail() != null ) {
-            target.setEmail( source.getEmail() );
-        }
-        if ( source.getCountryCode() != null ) {
-            target.setCountryCode( source.getCountryCode() );
-        }
         if ( source.getPhoneNumber() != null ) {
             target.setPhoneNumber( source.getPhoneNumber() );
         }
-        if ( source.getAddress() != null ) {
-            target.setAddress( source.getAddress() );
+        if ( source.getAccount() != null ) {
+            target.setAccount( source.getAccount() );
         }
     }
 }
