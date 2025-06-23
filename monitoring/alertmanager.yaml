@@ -1,0 +1,30 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 3h
+  receiver: 'send-to-both'
+
+receivers:
+  - name: 'send-to-both'
+    slack_configs:
+      - send_resolved: true
+        api_url: 'https://hooks.slack.com/services/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'
+        channel: '#alerts'  
+        username: 'SecureBank Alerts'
+        title: '{{ .CommonAnnotations.summary }}'
+        text: |-
+          *🚨 Alert:* {{ .CommonAnnotations.description }}
+          *🔧 Status:* {{ .Status }}
+          *📍 Instance:* {{ .CommonLabels.instance }}
+          *🔥 Severity:* {{ .CommonLabels.severity }}
+          {{ with (index .Alerts 0) }}
+          *⏰ Time:* {{ .StartsAt }}
+          {{ end }}
+
+    webhook_configs:
+      - url: 'http://webhook-service.monitoring.svc.cluster.local/alert'
+        send_resolved: true

@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: self-healing-job
+  namespace: monitoring
+spec:
+  template:
+    spec:
+      containers:
+        - name: pod-killer
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Finding and deleting pod with high CPU..."
+              kubectl delete pod -n securebank -l app=backend
+      restartPolicy: Never
+  backoffLimit: 1

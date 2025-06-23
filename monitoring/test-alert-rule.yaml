@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: test-instant-alert
+  namespace: monitoring
+  labels:
+    role: alert-rules
+spec:
+  groups:
+    - name: test-group
+      rules:
+        - alert: SlackTestAlert
+          expr: vector(1)
+          for: 0s
+          labels:
+            severity: warning
+          annotations:
+            summary: "Test alert for Slack webhook"
+            description: "This is a test alert to verify Slack integration."

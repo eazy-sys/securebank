@@ -1,0 +1,646 @@
+{
+    "apiVersion": "v1",
+    "kind": "Pod",
+    "metadata": {
+        "annotations": {
+            "kubectl.kubernetes.io/default-container": "alertmanager"
+        },
+        "creationTimestamp": "2025-06-22T15:01:33Z",
+        "deletionGracePeriodSeconds": 120,
+        "deletionTimestamp": "2025-06-22T15:03:33Z",
+        "generateName": "alertmanager-kube-prometheus-stack-alertmanager-",
+        "labels": {
+            "alertmanager": "kube-prometheus-stack-alertmanager",
+            "app.kubernetes.io/instance": "kube-prometheus-stack-alertmanager",
+            "app.kubernetes.io/managed-by": "prometheus-operator",
+            "app.kubernetes.io/name": "alertmanager",
+            "app.kubernetes.io/version": "0.28.1",
+            "apps.kubernetes.io/pod-index": "0",
+            "controller-revision-hash": "alertmanager-kube-prometheus-stack-alertmanager-786bf66bc8",
+            "statefulset.kubernetes.io/pod-name": "alertmanager-kube-prometheus-stack-alertmanager-0"
+        },
+        "name": "alertmanager-kube-prometheus-stack-alertmanager-0",
+        "namespace": "monitoring",
+        "ownerReferences": [
+            {
+                "apiVersion": "apps/v1",
+                "blockOwnerDeletion": true,
+                "controller": true,
+                "kind": "StatefulSet",
+                "name": "alertmanager-kube-prometheus-stack-alertmanager",
+                "uid": "fca3b2a6-8659-4255-9de9-f5c5e0a69bc6"
+            }
+        ],
+        "resourceVersion": "4821283",
+        "uid": "ea032b73-424d-451e-abdd-a084a8522028"
+    },
+    "spec": {
+        "affinity": {
+            "podAntiAffinity": {
+                "preferredDuringSchedulingIgnoredDuringExecution": [
+                    {
+                        "podAffinityTerm": {
+                            "labelSelector": {
+                                "matchExpressions": [
+                                    {
+                                        "key": "app.kubernetes.io/name",
+                                        "operator": "In",
+                                        "values": [
+                                            "alertmanager"
+                                        ]
+                                    },
+                                    {
+                                        "key": "alertmanager",
+                                        "operator": "In",
+                                        "values": [
+                                            "kube-prometheus-stack-alertmanager"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "topologyKey": "kubernetes.io/hostname"
+                        },
+                        "weight": 100
+                    }
+                ]
+            }
+        },
+        "automountServiceAccountToken": true,
+        "containers": [
+            {
+                "args": [
+                    "--config.file=/etc/alertmanager/config_out/alertmanager.env.yaml",
+                    "--storage.path=/alertmanager",
+                    "--data.retention=120h",
+                    "--cluster.listen-address=",
+                    "--web.listen-address=:9093",
+                    "--web.external-url=http://kube-prometheus-stack-alertmanager.monitoring:9093",
+                    "--web.route-prefix=/",
+                    "--cluster.label=monitoring/kube-prometheus-stack-alertmanager",
+                    "--cluster.peer=alertmanager-kube-prometheus-stack-alertmanager-0.alertmanager-operated:9094",
+                    "--cluster.reconnect-timeout=5m",
+                    "--web.config.file=/etc/alertmanager/web_config/web-config.yaml"
+                ],
+                "env": [
+                    {
+                        "name": "POD_IP",
+                        "valueFrom": {
+                            "fieldRef": {
+                                "apiVersion": "v1",
+                                "fieldPath": "status.podIP"
+                            }
+                        }
+                    }
+                ],
+                "image": "quay.io/prometheus/alertmanager:v0.28.1",
+                "imagePullPolicy": "IfNotPresent",
+                "livenessProbe": {
+                    "failureThreshold": 10,
+                    "httpGet": {
+                        "path": "/-/healthy",
+                        "port": "http-web",
+                        "scheme": "HTTP"
+                    },
+                    "periodSeconds": 10,
+                    "successThreshold": 1,
+                    "timeoutSeconds": 3
+                },
+                "name": "alertmanager",
+                "ports": [
+                    {
+                        "containerPort": 9093,
+                        "name": "http-web",
+                        "protocol": "TCP"
+                    },
+                    {
+                        "containerPort": 9094,
+                        "name": "mesh-tcp",
+                        "protocol": "TCP"
+                    },
+                    {
+                        "containerPort": 9094,
+                        "name": "mesh-udp",
+                        "protocol": "UDP"
+                    }
+                ],
+                "readinessProbe": {
+                    "failureThreshold": 10,
+                    "httpGet": {
+                        "path": "/-/ready",
+                        "port": "http-web",
+                        "scheme": "HTTP"
+                    },
+                    "initialDelaySeconds": 3,
+                    "periodSeconds": 5,
+                    "successThreshold": 1,
+                    "timeoutSeconds": 3
+                },
+                "resources": {
+                    "requests": {
+                        "memory": "200Mi"
+                    }
+                },
+                "securityContext": {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": {
+                        "drop": [
+                            "ALL"
+                        ]
+                    },
+                    "readOnlyRootFilesystem": true
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "FallbackToLogsOnError",
+                "volumeMounts": [
+                    {
+                        "mountPath": "/etc/alertmanager/config",
+                        "name": "config-volume"
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/config_out",
+                        "name": "config-out",
+                        "readOnly": true
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/certs",
+                        "name": "tls-assets",
+                        "readOnly": true
+                    },
+                    {
+                        "mountPath": "/alertmanager",
+                        "name": "alertmanager-kube-prometheus-stack-alertmanager-db"
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/web_config/web-config.yaml",
+                        "name": "web-config",
+                        "readOnly": true,
+                        "subPath": "web-config.yaml"
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/cluster_tls_config/cluster-tls-config.yaml",
+                        "name": "cluster-tls-config",
+                        "readOnly": true,
+                        "subPath": "cluster-tls-config.yaml"
+                    },
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "kube-api-access-sc2jf",
+                        "readOnly": true
+                    }
+                ]
+            },
+            {
+                "args": [
+                    "--listen-address=:8080",
+                    "--web-config-file=/etc/alertmanager/web_config/web-config.yaml",
+                    "--reload-url=http://127.0.0.1:9093/-/reload",
+                    "--config-file=/etc/alertmanager/config/alertmanager.yaml.gz",
+                    "--config-envsubst-file=/etc/alertmanager/config_out/alertmanager.env.yaml",
+                    "--watched-dir=/etc/alertmanager/config"
+                ],
+                "command": [
+                    "/bin/prometheus-config-reloader"
+                ],
+                "env": [
+                    {
+                        "name": "POD_NAME",
+                        "valueFrom": {
+                            "fieldRef": {
+                                "apiVersion": "v1",
+                                "fieldPath": "metadata.name"
+                            }
+                        }
+                    },
+                    {
+                        "name": "SHARD",
+                        "value": "-1"
+                    }
+                ],
+                "image": "quay.io/prometheus-operator/prometheus-config-reloader:v0.83.0",
+                "imagePullPolicy": "IfNotPresent",
+                "name": "config-reloader",
+                "ports": [
+                    {
+                        "containerPort": 8080,
+                        "name": "reloader-web",
+                        "protocol": "TCP"
+                    }
+                ],
+                "resources": {},
+                "securityContext": {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": {
+                        "drop": [
+                            "ALL"
+                        ]
+                    },
+                    "readOnlyRootFilesystem": true
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "FallbackToLogsOnError",
+                "volumeMounts": [
+                    {
+                        "mountPath": "/etc/alertmanager/config",
+                        "name": "config-volume",
+                        "readOnly": true
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/config_out",
+                        "name": "config-out"
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/web_config/web-config.yaml",
+                        "name": "web-config",
+                        "readOnly": true,
+                        "subPath": "web-config.yaml"
+                    },
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "kube-api-access-sc2jf",
+                        "readOnly": true
+                    }
+                ]
+            }
+        ],
+        "dnsPolicy": "ClusterFirst",
+        "enableServiceLinks": true,
+        "hostname": "alertmanager-kube-prometheus-stack-alertmanager-0",
+        "initContainers": [
+            {
+                "args": [
+                    "--watch-interval=0",
+                    "--listen-address=:8081",
+                    "--config-file=/etc/alertmanager/config/alertmanager.yaml.gz",
+                    "--config-envsubst-file=/etc/alertmanager/config_out/alertmanager.env.yaml",
+                    "--watched-dir=/etc/alertmanager/config"
+                ],
+                "command": [
+                    "/bin/prometheus-config-reloader"
+                ],
+                "env": [
+                    {
+                        "name": "POD_NAME",
+                        "valueFrom": {
+                            "fieldRef": {
+                                "apiVersion": "v1",
+                                "fieldPath": "metadata.name"
+                            }
+                        }
+                    },
+                    {
+                        "name": "SHARD",
+                        "value": "-1"
+                    }
+                ],
+                "image": "quay.io/prometheus-operator/prometheus-config-reloader:v0.83.0",
+                "imagePullPolicy": "IfNotPresent",
+                "name": "init-config-reloader",
+                "ports": [
+                    {
+                        "containerPort": 8081,
+                        "name": "reloader-web",
+                        "protocol": "TCP"
+                    }
+                ],
+                "resources": {},
+                "securityContext": {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": {
+                        "drop": [
+                            "ALL"
+                        ]
+                    },
+                    "readOnlyRootFilesystem": true
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "FallbackToLogsOnError",
+                "volumeMounts": [
+                    {
+                        "mountPath": "/etc/alertmanager/config",
+                        "name": "config-volume",
+                        "readOnly": true
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/config_out",
+                        "name": "config-out"
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/web_config/web-config.yaml",
+                        "name": "web-config",
+                        "readOnly": true,
+                        "subPath": "web-config.yaml"
+                    },
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "kube-api-access-sc2jf",
+                        "readOnly": true
+                    }
+                ]
+            }
+        ],
+        "nodeName": "aks-default-18719392-vmss000001",
+        "preemptionPolicy": "PreemptLowerPriority",
+        "priority": 0,
+        "restartPolicy": "Always",
+        "schedulerName": "default-scheduler",
+        "securityContext": {
+            "fsGroup": 2000,
+            "runAsGroup": 2000,
+            "runAsNonRoot": true,
+            "runAsUser": 1000,
+            "seccompProfile": {
+                "type": "RuntimeDefault"
+            }
+        },
+        "serviceAccount": "kube-prometheus-stack-alertmanager",
+        "serviceAccountName": "kube-prometheus-stack-alertmanager",
+        "subdomain": "alertmanager-operated",
+        "terminationGracePeriodSeconds": 120,
+        "tolerations": [
+            {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/not-ready",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+            },
+            {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/unreachable",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+            },
+            {
+                "effect": "NoSchedule",
+                "key": "node.kubernetes.io/memory-pressure",
+                "operator": "Exists"
+            }
+        ],
+        "volumes": [
+            {
+                "name": "config-volume",
+                "secret": {
+                    "defaultMode": 420,
+                    "secretName": "alertmanager-kube-prometheus-stack-alertmanager-generated"
+                }
+            },
+            {
+                "name": "tls-assets",
+                "projected": {
+                    "defaultMode": 420,
+                    "sources": [
+                        {
+                            "secret": {
+                                "name": "alertmanager-kube-prometheus-stack-alertmanager-tls-assets-0"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "emptyDir": {
+                    "medium": "Memory"
+                },
+                "name": "config-out"
+            },
+            {
+                "name": "web-config",
+                "secret": {
+                    "defaultMode": 420,
+                    "secretName": "alertmanager-kube-prometheus-stack-alertmanager-web-config"
+                }
+            },
+            {
+                "name": "cluster-tls-config",
+                "secret": {
+                    "defaultMode": 420,
+                    "secretName": "alertmanager-kube-prometheus-stack-alertmanager-cluster-tls-config"
+                }
+            },
+            {
+                "emptyDir": {},
+                "name": "alertmanager-kube-prometheus-stack-alertmanager-db"
+            },
+            {
+                "name": "kube-api-access-sc2jf",
+                "projected": {
+                    "defaultMode": 420,
+                    "sources": [
+                        {
+                            "serviceAccountToken": {
+                                "expirationSeconds": 3607,
+                                "path": "token"
+                            }
+                        },
+                        {
+                            "configMap": {
+                                "items": [
+                                    {
+                                        "key": "ca.crt",
+                                        "path": "ca.crt"
+                                    }
+                                ],
+                                "name": "kube-root-ca.crt"
+                            }
+                        },
+                        {
+                            "downwardAPI": {
+                                "items": [
+                                    {
+                                        "fieldRef": {
+                                            "apiVersion": "v1",
+                                            "fieldPath": "metadata.namespace"
+                                        },
+                                        "path": "namespace"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "status": {
+        "conditions": [
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2025-06-22T15:01:33Z",
+                "status": "False",
+                "type": "PodReadyToStartContainers"
+            },
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2025-06-22T15:01:33Z",
+                "message": "containers with incomplete status: [init-config-reloader]",
+                "reason": "ContainersNotInitialized",
+                "status": "False",
+                "type": "Initialized"
+            },
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2025-06-22T15:01:33Z",
+                "message": "containers with unready status: [alertmanager config-reloader]",
+                "reason": "ContainersNotReady",
+                "status": "False",
+                "type": "Ready"
+            },
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2025-06-22T15:01:33Z",
+                "message": "containers with unready status: [alertmanager config-reloader]",
+                "reason": "ContainersNotReady",
+                "status": "False",
+                "type": "ContainersReady"
+            },
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2025-06-22T15:01:33Z",
+                "status": "True",
+                "type": "PodScheduled"
+            }
+        ],
+        "containerStatuses": [
+            {
+                "image": "quay.io/prometheus/alertmanager:v0.28.1",
+                "imageID": "",
+                "lastState": {},
+                "name": "alertmanager",
+                "ready": false,
+                "restartCount": 0,
+                "started": false,
+                "state": {
+                    "waiting": {
+                        "reason": "PodInitializing"
+                    }
+                },
+                "volumeMounts": [
+                    {
+                        "mountPath": "/etc/alertmanager/config",
+                        "name": "config-volume"
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/config_out",
+                        "name": "config-out",
+                        "readOnly": true,
+                        "recursiveReadOnly": "Disabled"
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/certs",
+                        "name": "tls-assets",
+                        "readOnly": true,
+                        "recursiveReadOnly": "Disabled"
+                    },
+                    {
+                        "mountPath": "/alertmanager",
+                        "name": "alertmanager-kube-prometheus-stack-alertmanager-db"
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/web_config/web-config.yaml",
+                        "name": "web-config",
+                        "readOnly": true,
+                        "recursiveReadOnly": "Disabled"
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/cluster_tls_config/cluster-tls-config.yaml",
+                        "name": "cluster-tls-config",
+                        "readOnly": true,
+                        "recursiveReadOnly": "Disabled"
+                    },
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "kube-api-access-sc2jf",
+                        "readOnly": true,
+                        "recursiveReadOnly": "Disabled"
+                    }
+                ]
+            },
+            {
+                "image": "quay.io/prometheus-operator/prometheus-config-reloader:v0.83.0",
+                "imageID": "",
+                "lastState": {},
+                "name": "config-reloader",
+                "ready": false,
+                "restartCount": 0,
+                "started": false,
+                "state": {
+                    "waiting": {
+                        "reason": "PodInitializing"
+                    }
+                },
+                "volumeMounts": [
+                    {
+                        "mountPath": "/etc/alertmanager/config",
+                        "name": "config-volume",
+                        "readOnly": true,
+                        "recursiveReadOnly": "Disabled"
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/config_out",
+                        "name": "config-out"
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/web_config/web-config.yaml",
+                        "name": "web-config",
+                        "readOnly": true,
+                        "recursiveReadOnly": "Disabled"
+                    },
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "kube-api-access-sc2jf",
+                        "readOnly": true,
+                        "recursiveReadOnly": "Disabled"
+                    }
+                ]
+            }
+        ],
+        "hostIP": "10.0.1.5",
+        "hostIPs": [
+            {
+                "ip": "10.0.1.5"
+            }
+        ],
+        "initContainerStatuses": [
+            {
+                "image": "quay.io/prometheus-operator/prometheus-config-reloader:v0.83.0",
+                "imageID": "",
+                "lastState": {},
+                "name": "init-config-reloader",
+                "ready": false,
+                "restartCount": 0,
+                "started": false,
+                "state": {
+                    "waiting": {
+                        "reason": "PodInitializing"
+                    }
+                },
+                "volumeMounts": [
+                    {
+                        "mountPath": "/etc/alertmanager/config",
+                        "name": "config-volume",
+                        "readOnly": true,
+                        "recursiveReadOnly": "Disabled"
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/config_out",
+                        "name": "config-out"
+                    },
+                    {
+                        "mountPath": "/etc/alertmanager/web_config/web-config.yaml",
+                        "name": "web-config",
+                        "readOnly": true,
+                        "recursiveReadOnly": "Disabled"
+                    },
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "kube-api-access-sc2jf",
+                        "readOnly": true,
+                        "recursiveReadOnly": "Disabled"
+                    }
+                ]
+            }
+        ],
+        "phase": "Pending",
+        "qosClass": "Burstable",
+        "startTime": "2025-06-22T15:01:33Z"
+    }
+}

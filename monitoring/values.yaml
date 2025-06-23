@@ -1,0 +1,10 @@
+alertmanager:
+  enabled: true
+  configMapOverrideName: alertmanager-config
+  alertmanagerSpec:
+    replicas: 1
+
+grafana:
+  adminPassword: admin
+  service:
+    type: LoadBalancer

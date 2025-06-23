@@ -1,0 +1,21 @@
+# webhook-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webhook-server
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webhook
+  template:
+    metadata:
+      labels:
+        app: webhook
+    spec:
+      containers:
+        - name: webhook
+          image: securebankdevacr.azurecr.io/webhook-server:latest
+          ports:
+            - containerPort: 9001

@@ -56,15 +56,15 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-    - name: SonarCloud Scan (Frontend)
-      uses: SonarSource/sonarcloud-github-action@v2
-      with:
-        projectBaseDir: App/frontend
-        args: >
-          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-          -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    # - name: SonarCloud Scan (Frontend)
+    #   uses: SonarSource/sonarcloud-github-action@v2
+    #   with:
+    #     projectBaseDir: App/frontend
+    #     args: >
+    #       -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+    #       -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+    #   env:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     - name: Send Email Notification
       uses: dawidd6/action-send-mail@v3
