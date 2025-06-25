@@ -41,8 +41,8 @@ jobs:
         run: |
             sed -i "s|image: securebankdevacr.azurecr.io/securebank-frontend:.*|image: securebankdevacr.azurecr.io/securebank-frontend:${{ github.sha }}|" argocd/frontend/deployment.yaml
         
-            - name: Commit changes
-            run: |
+      - name: Commit changes
+        run: |
               git config --global user.name 'CI Bot'
               git config --global user.email 'ci@example.com'
               git add argocd/backend/deployment.yaml
