@@ -11,7 +11,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://131.145.44.116") // Frontend LoadBalancer IP
+                .allowedOrigins("http://172.166.92.213") // Frontend LoadBalancer IP
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true); // Important if you're sending cookies/auth headers

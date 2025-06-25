@@ -36,3 +36,16 @@ jobs:
         run: |
           docker build -f Dockerfile -t securebankdevacr.azurecr.io/securebank-frontend:latest .
           docker push securebankdevacr.azurecr.io/securebank-frontend:latest
+
+      - name: Update frontend deployment image
+        run: |
+            sed -i "s|image: securebankdevacr.azurecr.io/securebank-frontend:.*|image: securebankdevacr.azurecr.io/securebank-frontend:${{ github.sha }}|" argocd/frontend/deployment.yaml
+        
+      - name: Commit & push updated frontend deployment
+        run: |
+            git config --global user.name 'CI Bot'
+            git config --global user.email 'ci@example.com'
+            git add argocd/frontend/deployment.yaml
+            git commit -m "CD: update frontend image to ${{ github.sha }}"
+            git push
+        

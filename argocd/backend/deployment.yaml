@@ -46,16 +46,3 @@ spec:
             secretKeyRef:
               name: jwt-secrets
               key: expiration
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: backend
-  namespace: securebank
-spec:
-  type: LoadBalancer
-  selector:
-    app: backend
-  ports:
-  - port: 8081
-    targetPort: 8081 

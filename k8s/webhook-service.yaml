@@ -1,4 +1,3 @@
-# webhook-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -6,9 +5,9 @@ metadata:
   namespace: monitoring
 spec:
   selector:
-    app: webhook
+    app: webhook                    # Matches pod label: app: webhook
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 9001
-  type: ClusterIP
+      port: 80                     # Service exposed on port 80
+      targetPort: 9001            # Pod container is listening on 9001
+  type: ClusterIP                  # Internal access only
