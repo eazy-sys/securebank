@@ -42,6 +42,8 @@ jobs:
           sed -i "s|image: securebankdevacr.azurecr.io/securebank-backend:.*|image: securebankdevacr.azurecr.io/securebank-backend:${{ github.sha }}|" argocd/backend/deployment.yaml
 
       - name: Commit & push updated deployment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           git config --global user.name 'CI Bot'
           git config --global user.email 'ci@example.com'

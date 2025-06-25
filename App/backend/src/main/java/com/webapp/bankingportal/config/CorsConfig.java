@@ -14,6 +14,6 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://172.166.92.213") // Frontend LoadBalancer IP
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(true); // Important if you're sending cookies/auth headers
+                .allowCredentials(true); 
     }
 }
