@@ -39,18 +39,18 @@ jobs:
 
       - name: Update backend deployment image
         run: |
-          sed -i "s|image: securebankdevacr.azurecr.io/securebank-backend:.*|image: securebankdevacr.azurecr.io/securebank-backend:${{ github.sha }}|" argocd/backend/deployment.yaml
-
-      - name: Commit changes
+            sed -i "s|image: securebankdevacr.azurecr.io/securebank-backend:.*|image: securebankdevacr.azurecr.io/securebank-backend:${{ github.sha }}|" argocd/backend/deployment.yaml
+        
+      - name: Commit updated deployment
         run: |
             git config --global user.name 'CI Bot'
             git config --global user.email 'ci@example.com'
             git add argocd/backend/deployment.yaml
-            git commit -m "CD: update backend image to ${{ github.sha }}" || echo "No changes to commit"
+            git commit -m "CD: update backend image to ${{ github.sha }}" || echo "No changes"
         
-      - name: Push changes
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-            github_token: ${{ secrets.GH_PAT }}
-            branch: main
+      - name: Push changes to GitHub
+        run: |
+            git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/eazy-sys/securebank.git
+            git push origin main
+        
         
