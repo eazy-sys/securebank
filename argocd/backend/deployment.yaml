@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: securebankdevacr.azurecr.io/securebank-backend:latest
+        image: securebankdevacr.azurecr.io/securebank-backend:d4a8f1f143a77a015c57a9c1c78613877f09d13f
         ports:
         - containerPort: 8081
         env:
