@@ -49,5 +49,6 @@ jobs:
             git config --global user.email 'ci@example.com'
             git add argocd/frontend/deployment.yaml
             git commit -m "CD: update frontend image to ${{ github.sha }}"
-            git push
+            git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/eazy-sys/securebank.git HEAD:main
+
         
