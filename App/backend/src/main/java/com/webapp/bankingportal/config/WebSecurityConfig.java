@@ -67,6 +67,9 @@ public class WebSecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors() // 🔥 Tell Spring Security to use your CorsConfig
+        .and()
+        .csrf(csrf -> csrf.disable())
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(PUBLIC_URLS).permitAll()
