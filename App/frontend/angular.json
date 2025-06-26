@@ -41,7 +41,7 @@
                 }
               ],
               "outputHashing": "all",
-              **"baseHref": "/"**
+              "baseHref": "/"
             },
             "development": {
               "buildOptimizer": false,
