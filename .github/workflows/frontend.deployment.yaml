@@ -1,16 +1,16 @@
-name: Build and Push Frontend
+name: Build and Push Backend
 
 on:
   push:
     branches:
       - main
     paths:
-      - App/backend/**
+      - App/frontend/**
       - .github/workflows/frontend.deployment.yaml
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -34,22 +34,22 @@ jobs:
       - name: Build and push Docker image
         working-directory: ./App/frontend
         run: |
-          docker build -f Dockerfile -t securebankdevacr.azurecr.io/securebank-frontend:latest .
-          docker push securebankdevacr.azurecr.io/securebank-frontend:latest
+          docker build -f Dockerfile -t securebankdevacr.azurecr.io/securebank-frontend:${{ github.sha }} .
+          docker push securebankdevacr.azurecr.io/securebank-frontend:${{ github.sha }}
 
-      - name: Update backend deployment image
+      - name: Update frontend deployment image
         run: |
-            sed -i "s|image: securebankdevacr.azurecr.io/securebank-backend:.*|image: securebankdevacr.azurecr.io/securebank-backend:${{ github.sha }}|" argocd/backend/deployment.yaml
-        
+          sed -i "s|image: securebankdevacr.azurecr.io/securebank-frontend:.*|image: securebankdevacr.azurecr.io/securebank-frontend:${{ github.sha }}|" argocd/frontend/deployment.yaml
+
       - name: Commit updated deployment
         run: |
-            git config --global user.name 'CI Bot'
-            git config --global user.email 'ci@example.com'
-            git add argocd/backend/deployment.yaml
-            git commit -m "CD: update backend image to ${{ github.sha }}" || echo "No changes"
-        
+          git config --global user.name 'CI Bot'
+          git config --global user.email 'ci@example.com'
+          git add argocd/frontend/deployment.yaml
+          git commit -m "CD: update frontend image to ${{ github.sha }}" || echo "No changes"
+
       - name: Push changes to GitHub
-        run: |
-            git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/eazy-sys/securebank.git
-            git push origin main
-        
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GH_PAT }}
+          branch: main
