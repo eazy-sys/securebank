@@ -4,7 +4,6 @@ metadata:
   name: securebank-ingress
   namespace: securebank
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
