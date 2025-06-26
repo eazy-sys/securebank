@@ -33,7 +33,8 @@
             ],
             "allowedCommonJsDependencies": [
               "chart.js"
-            ]
+          ],
+          "baseHref": "/" 
           },
           "configurations": {
             "production": {

@@ -4,20 +4,14 @@ metadata:
   name: securebank-ingress
   namespace: securebank
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
   rules:
   - host: securebank.local
     http:
       paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: frontend
-            port:
-              number: 80
       - path: /api(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
@@ -25,3 +19,10 @@ spec:
             name: backend
             port:
               number: 8081
+      - path: /(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
