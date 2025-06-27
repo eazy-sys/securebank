@@ -11,5 +11,5 @@ route:
 receivers:
   - name: discord-webhook
     webhook_configs:
-      - url: "https://discordapp.com/api/webhooks/1386318223791882271/ahQvEm1ihv_Ew3PDh2Dsj6MfnLM29K_BMzN0VSpC0Dtx5UiVryBB9I0Sw41bUSxZz33A"
+      - url: 
         send_resolved: true

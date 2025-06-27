@@ -12,7 +12,7 @@ receivers:
   - name: 'send-to-both'
     slack_configs:
       - send_resolved: true
-        api_url: 'https://hooks.slack.com/services/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'
+        api_url:
         channel: '#alerts'  
         username: 'SecureBank Alerts'
         title: '{{ .CommonAnnotations.summary }}'

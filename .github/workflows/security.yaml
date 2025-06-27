@@ -74,8 +74,8 @@ jobs:
         username: ${{ secrets.SMTP_USERNAME }}
         password: ${{ secrets.SMTP_PASSWORD }}
         subject: "🔐 SecureBank – Security Scan Completed"
-        to: securebank74@gmail.com
-        from: securebank74@gmail.com
+        to: 
+        from: 
         body: |
           ✅ Trivy and SonarCloud scans have completed for both frontend and backend.
 
